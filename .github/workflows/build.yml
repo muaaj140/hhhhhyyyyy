@@ -33,4 +33,8 @@ jobs:
 
       - name: Maximize Build Space
         run: |
-          sudo rm -rf /usr/share/
+        - name: Build ROM
+        run: |
+          source build/envsetup.sh
+          lunch lineage_vany8-userdebug
+          mka bacon -j$(nproc --all)
