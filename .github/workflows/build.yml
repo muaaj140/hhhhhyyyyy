@@ -1,0 +1,36 @@
+name: Build VANY OS (Android 8.0 Oreo)
+
+on:
+  workflow_dispatch:
+    inputs:
+      MANIFEST_URL:
+        description: 'Repo Manifest URL (e.g. LineageOS or AOSP)'
+        required: true
+        default: 'https://github.com/LineageOS/android'
+      MANIFEST_BRANCH:
+        description: 'Branch Name (e.g. lineage-15.1 for Android 8.1)'
+        required: true
+        default: 'lineage-15.1'
+      DEVICE_NAME:
+        description: 'Device Codename (e.g. vany8)'
+        required: true
+        default: 'vany8'
+
+jobs:
+  build:
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Free Up Disk Space
+        uses: jlumbroso/free-disk-space@main
+        with:
+          tool-cache: true
+          android: false
+          dotnet: true
+          haskell: true
+          large-packages: true
+          docker-images: true
+          swap-storage: false
+
+      - name: Maximize Build Space
+        run: |
+          sudo rm -rf /usr/share/
