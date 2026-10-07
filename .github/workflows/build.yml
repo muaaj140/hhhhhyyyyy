@@ -1,39 +1,30 @@
-name: Build VANY OS (Android 8.0 Oreo)
+name: Build VANY ROM
 
 on:
   workflow_dispatch:
-    inputs:
-      MANIFEST_URL:
-        description: 'Repo Manifest URL (e.g. LineageOS or AOSP)'
-        required: true
-        default: 'https://github.com/LineageOS/android'
-      MANIFEST_BRANCH:
-        description: 'Branch Name (e.g. lineage-15.1 for Android 8.1)'
-        required: true
-        default: 'lineage-15.1'
-      DEVICE_NAME:
-        description: 'Device Codename (e.g. vany8)'
-        required: true
-        default: 'vany8'
 
 jobs:
   build:
     runs-on: ubuntu-22.04
-    steps:
-      - name: Free Up Disk Space
-        uses: jlumbroso/free-disk-space@main
-        with:
-          tool-cache: true
-          android: false
-          dotnet: true
-          haskell: true
-          large-packages: true
-          docker-images: true
-          swap-storage: false
 
-      - name: Maximize Build Space
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Maximize Build Space Safely
         run: |
-        - name: Build ROM
+          sudo rm -rf /usr/share/dotnet
+          sudo rm -rf /usr/local/lib/android
+          sudo rm -rf /opt/ghc
+          sudo apt-get clean
+          df -h
+
+      - name: Set up Build Environment
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y bc bisect-pp ccache flex bison gptfdisk gdisk build-essential zip curl zlib1g-dev gcc-multilib g++-multilib libc6-dev-i386 lib32ncurses5-dev x11proto-core-dev libx11-dev lib32z1-dev libgl1-mesa-dev libxml2-utils xsltproc unzip fontconfig
+
+      - name: Build ROM
         run: |
           source build/envsetup.sh
           lunch lineage_vany8-userdebug
